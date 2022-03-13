@@ -8,10 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.widget.Toast;
 
 import com.example.maxisistemaschallenge.R;
@@ -20,25 +17,36 @@ import com.example.maxisistemaschallenge.ViewModel.BreedsViewModelFactory;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class BreedsActivity extends AppCompatActivity {
     private CustomAdapter adapter;
     private RecyclerView recyclerView;
     ProgressDialog progressDoalog;
     List<String> breeds, photos;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        progressDoalog = new ProgressDialog(MainActivity.this);
-        progressDoalog.setMessage("Cargando....");
+        setContentView(R.layout.activity_breeds);
+        progressDoalog = new ProgressDialog(BreedsActivity.this);
+        progressDoalog.setMessage("Cargando sub-razas...");
         progressDoalog.show();
 
         recyclerView = findViewById(R.id.customRecyclerView);
-        setupViewModel();
+        String breed="";
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if(extras == null) {
+                breed= "";
+            } else {
+                breed= extras.getString("selectBreed");
+            }
+        } else {
+            breed= (String) savedInstanceState.getSerializable("selectBreed");
+        }
+        System.out.println("La raza seleccionada es "+breed);
+        setupViewModel(breed);
     }
 
-    private void setupViewModel() {
+    private void setupViewModel(String breed) {
         /*Con este método se pueden observar los datos en vivo para actualizar la pantalla de la
         interfaz de usuario cada vez que haya un cambio en los datos de caché.*/
         BreedsViewModelFactory factory = new BreedsViewModelFactory(this,recyclerView);
@@ -46,22 +54,21 @@ public class MainActivity extends AppCompatActivity {
 
         LifecycleOwner context = this;
 
-        viewModel.getBreeds().observe(context, breeds -> {
-            System.out.println("Breeds tiene "+breeds.size()+" entradas. ");
+        viewModel.getSubbreeds(breed).observe(context, breeds -> {
+           // System.out.println("Breeds tiene "+breeds.size()+" entradas. ");
             if(breeds.isEmpty()){
                 progressDoalog.dismiss();
-                Toast.makeText(MainActivity.this, "Algo saió mal, seguro puedes volver a intentarlo!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(BreedsActivity.this, "Algo saió mal, seguro puedes volver a intentarlo!", Toast.LENGTH_SHORT).show();
             }
             else{
-               //progressDoalog.dismiss();
+                //progressDoalog.dismiss();
                 //generateDataList(breeds);
-                viewModel.getBreedPhoto(breeds).observe(context, photos->{
+                viewModel.getSubbreedPhoto(breed, breeds).observe(context, photos->{
                     if(photos.isEmpty()){
                         progressDoalog.dismiss();
-                        Toast.makeText(MainActivity.this, "Algo saió mal, seguro puedes volver a intentarlo2!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(BreedsActivity.this, "Algo saió mal, seguro puedes volver a intentarlo2!", Toast.LENGTH_SHORT).show();
                     }else{
                         progressDoalog.dismiss();
-                       // Toast.makeText(MainActivity.this,"Imagenes listas para mostrar",Toast.LENGTH_SHORT).show();
                         generateDataList(breeds, photos);
                     }
                 });
@@ -78,5 +85,4 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
     }
-
 }

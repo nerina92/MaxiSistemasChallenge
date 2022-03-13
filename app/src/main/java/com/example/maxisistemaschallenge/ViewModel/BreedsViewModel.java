@@ -18,12 +18,18 @@ public class BreedsViewModel extends ViewModel {
         this.repository = new Repository(context,recyclerView);
     }
 
-    /*Los dos métodos siguientes (getAlbums y getPhotos) llaman al repositorio desde el ModelView*/
+    /*Los métodos siguientes llaman al repositorio desde el ModelView*/
     public MutableLiveData<List<String>> getBreeds() {
         //repository.getAllBreeds2();
         return repository.getAllBreeds();
     }
     public MutableLiveData<List<String>> getBreedPhoto(List<String> breeds) {
         return repository.getBreedPhoto(breeds);
+    }
+    public MutableLiveData<List<String>> getSubbreeds(String breed) {
+        return repository.getSubbreeds(breed);
+    }
+    public MutableLiveData<List<String>>getSubbreedPhoto(String breed, List<String>subbreeds){
+        return repository.getSubbreedPhoto(breed,subbreeds);
     }
 }

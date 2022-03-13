@@ -12,18 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaxiSistemasChallenge">
         <activity
+            android:name=".View.BreedsActivity"
+            android:exported="false" />
+        <activity
             android:name=".View.SplashActivity"
-            android:theme="@style/Theme.SplashTheme"
-            android:exported="true" >
+            android:exported="true"
+            android:theme="@style/Theme.SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".View.MainActivity"
-            android:exported="false"/>
+            android:exported="false" />
     </application>
 
 </manifest>

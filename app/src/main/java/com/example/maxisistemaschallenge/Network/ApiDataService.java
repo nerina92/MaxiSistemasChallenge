@@ -18,8 +18,8 @@ public interface ApiDataService {
     Call<BreedImageData> getBreedPhoto(@Path("breed") String breed);
 
     @GET("/api/breed/{breed}/list")
-    Call<List<String>> getSubBreeds(@Path("breed") String breed);
+    Call<ListBreedsData> getSubBreeds(@Path("breed") String breed);
 
     @GET("/api/breed/{breed}/{sub_breed}/images/random")
-    Call<List<String>> getSubBreedPhoto(@Path("breed") String breed,@Path("sub_breed") String sub_breed);
+    Call<BreedImageData> getSubBreedPhoto(@Path("breed") String breed,@Path("sub_breed") String sub_breed);
 }
