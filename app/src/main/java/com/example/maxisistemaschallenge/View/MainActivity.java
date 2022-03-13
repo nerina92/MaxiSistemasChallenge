@@ -1,6 +1,8 @@
 package com.example.maxisistemaschallenge.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -12,30 +14,43 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.example.maxisistemaschallenge.R;
 import com.example.maxisistemaschallenge.ViewModel.BreedsViewModel;
 import com.example.maxisistemaschallenge.ViewModel.BreedsViewModelFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener{
     private CustomAdapter adapter;
     private RecyclerView recyclerView;
     ProgressDialog progressDoalog;
-    List<String> breeds, photos;
+    List<String> breeds, filterbreeds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         progressDoalog = new ProgressDialog(MainActivity.this);
-        progressDoalog.setMessage("Cargando....");
+        progressDoalog.setMessage("Cargando razas...");
         progressDoalog.show();
 
         recyclerView = findViewById(R.id.customRecyclerView);
         setupViewModel();
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main,menu);
+        MenuItem menuItem=menu.findItem(R.id.action_search);
+        SearchView searchView=(SearchView) MenuItemCompat.getActionView(menuItem);
+        //Log.d("SEARCH VIEW",searchView.toString());
+        searchView.setOnQueryTextListener(this);
+        return true;
     }
 
     private void setupViewModel() {
@@ -79,4 +94,28 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        filterbreeds=filter(breeds,query);
+        adapter.setFilter(filterbreeds);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        filterbreeds=filter(breeds,newText);
+        adapter.setFilter(filterbreeds);
+        return true;
+    }
+    private List<String>filter(List<String>breeds,String text){
+        //System.out.println("TEXTO A BUSCAR: "+text);
+        filterbreeds=new ArrayList<>();
+
+        for (int i=0; i<breeds.size();i++){
+            if (breeds.get(i).toUpperCase(Locale.ROOT).contains(text.toUpperCase(Locale.ROOT))) {
+                filterbreeds.add(breeds.get(i));
+            }
+        }
+        return filterbreeds;
+    }
 }

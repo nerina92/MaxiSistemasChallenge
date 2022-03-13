@@ -15,6 +15,7 @@ import com.example.maxisistemaschallenge.R;
 import com.example.maxisistemaschallenge.ViewModel.BreedsViewModel;
 import com.example.maxisistemaschallenge.ViewModel.BreedsViewModelFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BreedsActivity extends AppCompatActivity {
@@ -58,18 +59,24 @@ public class BreedsActivity extends AppCompatActivity {
            // System.out.println("Breeds tiene "+breeds.size()+" entradas. ");
             if(breeds.isEmpty()){
                 progressDoalog.dismiss();
-                Toast.makeText(BreedsActivity.this, "Algo saió mal, seguro puedes volver a intentarlo!", Toast.LENGTH_SHORT).show();
+                breeds=new ArrayList<>();
+                photos=new ArrayList<>();
+                breeds.add("No hay subrazas");
+                photos.add("https://prints.ultracoloringpages.com/f905b86a41352429807917a265044dd9.png");
+                generateDataList(breeds, photos);
+                //Toast.makeText(BreedsActivity.this, "Algo saió mal, seguro puedes volver a intentarlo!", Toast.LENGTH_SHORT).show();
             }
             else{
                 //progressDoalog.dismiss();
                 //generateDataList(breeds);
+                List<String> finalBreeds = breeds;
                 viewModel.getSubbreedPhoto(breed, breeds).observe(context, photos->{
                     if(photos.isEmpty()){
                         progressDoalog.dismiss();
                         Toast.makeText(BreedsActivity.this, "Algo saió mal, seguro puedes volver a intentarlo2!", Toast.LENGTH_SHORT).show();
                     }else{
                         progressDoalog.dismiss();
-                        generateDataList(breeds, photos);
+                        generateDataList(finalBreeds, photos);
                     }
                 });
 

@@ -69,6 +69,9 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.CustomView
             imgView=mView.findViewById(R.id.image_view);
             txtTitle = mView.findViewById(R.id.tv_title);
         }
-
+    }
+    public void setFilter(List<String>filterBreeds){
+        breedList =filterBreeds;
+        notifyDataSetChanged();
     }
 }
